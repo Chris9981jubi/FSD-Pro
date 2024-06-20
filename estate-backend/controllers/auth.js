@@ -62,10 +62,20 @@ const google = async(req,res,next)=>{
   }
 
 };
+const signout = async(req,res,next)=>{
+    try{
+      res.clearCookie('access_token');
+      res.status(200).json("user has been logged in")
+
+    }catch(error){
+
+    }
+}
 
 
 module.exports = {
   signup,
   signin,
-  google
+  google,
+  signout
 };
