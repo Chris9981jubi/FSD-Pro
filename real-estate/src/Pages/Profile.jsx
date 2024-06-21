@@ -5,6 +5,7 @@ import {getDownloadURL, getStorage, ref, uploadBytesResumable} from "firebase/st
 import app from '../firebase';
 import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserFailure, deleteUserSuccess, signOutUserStart, signOutUserFailure, signOutUserSuccess } from '../redux/user/userslice';
 import { useDispatch } from 'react-redux';
+import {Link} from "react-router-dom";
 
 const Profile = () => {
   const fileRef= useRef(null);
@@ -13,6 +14,8 @@ const Profile = () => {
   const [ filePerc, setFilePerc]= useState(0);
   const [fileUploadError, setFileUploadError]= useState(false);
   const [formData , setFormData]= useState({});
+  const [showListingsErrors, setShowListingsErrors]=useState(false);
+  const [userListings , setUserListings]=useState([]);
   const dispatch = useDispatch();
 
   console.log(formData)
@@ -103,7 +106,23 @@ const Profile = () => {
     }catch(error){
       dispatch(signOutUserSuccess(data));
     }
-  }
+  };
+  const handleShowListings= async()=>{
+    try{
+      setShowListingsErrors(false);
+      const res= await fetch(`/api/user/listings/${currentUser._id}`);
+      const data= await ref.json();
+       if(data.success === false){
+        setShowListingsErrors(true);
+        return;
+       }
+       setUserListings(data)
+
+    }catch(error){
+      setShowListingsErrors(true)
+    }
+
+  };
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -131,10 +150,16 @@ const Profile = () => {
       <input type="text" placeholder='password'id="password" onChange={handleChange} className='border p-3 rounded-lg w-45 mx-auto'></input>
       <button className='bg-slate-700 mx-auto text-white rounded-lg p-3 text-center hover: opacity-95'>UPDATE
       </button>
+      <Link className = "bg-blue-700 mx-auto rounded-lg p-3 text-white hover:opacity-95"to={"/create-listing"}>
+      create Listing
+      </Link>
       </form>
       <div className='flex justify-between mt-5'>
         <span onClick={handleDeleteUser}className='text-red-700 cursor-pointer'>Delete Account</span>
         <span onClick={handleSignoutUser}className='text-red-700 cursor-pointer'>SignOut</span>
+
+        <button onClick={handleShowListings} className='text-blue-800'>SHOW LISTINGS</button>
+        <p className={showListingsErrors ? "ERROR ACCESSING LISTINGS":""}></p>
       </div>
      
     </div>
