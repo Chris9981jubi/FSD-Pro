@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev":"node estate-backend/index.js",
-    "start": "nodemon estate-backend/index.js",
+    "dev":"nodemon estate-backend/index.js",
+    "start": "node estate-backend/index.js",
     "build": "npm install && npm install --prefix real-estate && npm run build --prefix real-estate"
   },
   "author": "chris",
