@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev":"node estate-backend/index.js",
     "start": "nodemon estate-backend/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install && npm install --prefix real-estate && npm run build --prefix real-estate"
   },
   "author": "chris",
