@@ -1,47 +1,51 @@
-import React from 'react'
-import {GoogleAuthProvider, signInWithPopup} from "firebase/auth"
-import app from '../firebase';
-import { useDispatch} from 'react-redux';
-import { signInSuccess } from '../redux/user/userslice';
-import { useNavigate } from 'react-router-dom';
+import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import app  from "../firebase.js";
+import { useDispatch } from "react-redux";
+import {signInSuccess} from "../redux/user/userSlice.js";
+import { useNavigate } from "react-router-dom";
 
-const Oauth = () => {
+
+const OAuth = () => {
+
     const dispatch = useDispatch();
-    const navigate=useNavigate();
-    const handleGoogleCLick= async()=>{
+    const navigate = useNavigate();
+
+    const handleGoogleClick = async () => {
         try {
             const provider = new GoogleAuthProvider();
-            const auth= getAuth(app);
+            const auth = getAuth(app);
 
             const result = await signInWithPopup(auth, provider);
-
-            const res = await fetch ("/api/auth/google",{
-                method: 'Post',
-                headers:{
-                    "Content-type":"application/json",
+            
+            const res = await fetch("/api/auth/google", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    name:result.user.displayName,
+                    name: result.user.displayName,
                     email: result.user.email,
-                    photo:result.user.photoURL,
+                    photo: result.user.photoURL,
                 }),
+            });
 
-           });
             const data = await res.json();
-            console.log(data)
-          dispatch(signInSuccess(data));
-          navigate("/")
+
+            dispatch(signInSuccess(data));
+            navigate("/");         
+
             
         } catch (error) {
-            console.log('Could not signIn with google', error)  
+            console.log('Could not sign in with Google', error);
         }
-        
     };
+
+
   return (
-    <button type= "button" className='bg-green-700 rounded-lg p-3 uppercase hover:opacity-80'>
-      continue with google
+    <button onClick={handleGoogleClick} type="button" className="bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-95">
+      Continue with Google
     </button>
   )
-}
+};
 
-export default Oauth
+export default OAuth;
